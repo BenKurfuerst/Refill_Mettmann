@@ -3,7 +3,10 @@ import json
 
 # 1. Daten abrufen von alter API
 url = "https://kartevonmorgen.org/api/place?query=refill"
-response = requests.get(url)
+headers = {
+    "User-Agent": "ArcGISDataBot/1.0"
+}
+response = requests.get(url, headers=headers)
 data = response.json()
 
 # 2. GeoJSON erstellen
