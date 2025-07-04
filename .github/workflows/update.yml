@@ -1,0 +1,32 @@
+name: Update Refill GeoJSON
+
+on:
+  schedule:
+    - cron: '0 4 * * *'  # täglich um 4 Uhr morgens
+  workflow_dispatch:     # manuell auslösbar
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v3
+
+      - name: Python installieren
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Abhängigkeiten installieren
+        run: pip install requests
+
+      - name: GeoJSON-Datei generieren
+        run: python refill2geojson.py
+
+      - name: Änderungen committen
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add refill.geojson
+          git commit -m "Update GeoJSON from API" || echo "Nichts zu committen"
+          git push
